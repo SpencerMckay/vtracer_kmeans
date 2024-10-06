@@ -1,18 +1,21 @@
 use std::str::FromStr;
 use visioncortex::PathSimplifyMode;
 
+#[repr(C)]
 pub enum Preset {
     Bw,
     Poster,
     Photo,
 }
 
+#[repr(C)]
 pub enum Hierarchical {
     Stacked,
     Cutout,
 }
 
 /// Converter config
+#[repr(C)]
 pub struct Config {
     pub hierarchical: Hierarchical,
     pub filter_speckle: usize,
@@ -28,6 +31,7 @@ pub struct Config {
     pub kmeans_max_iterations: usize,
 }
 
+#[repr(C)]
 pub(crate) struct ConverterConfig {
     pub hierarchical: Hierarchical,
     pub filter_speckle_area: usize,
@@ -44,7 +48,8 @@ pub(crate) struct ConverterConfig {
 }
 
 impl Default for Config {
-    fn default() -> Self {
+    #[no_mangle]
+    extern "C" fn default() -> Self {
         Self {
             hierarchical: Hierarchical::Stacked,
             mode: PathSimplifyMode::Spline,
@@ -65,7 +70,8 @@ impl Default for Config {
 impl FromStr for Hierarchical {
     type Err = String;
 
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
+    #[no_mangle]
+    extern "C" fn from_str(s: &str) -> Result<Self, Self::Err> {
         match s {
             "stacked" => Ok(Self::Stacked),
             "cutout" => Ok(Self::Cutout),
@@ -77,7 +83,8 @@ impl FromStr for Hierarchical {
 impl FromStr for Preset {
     type Err = String;
 
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
+    #[no_mangle]
+    extern "C" fn from_str(s: &str) -> Result<Self, Self::Err> {
         match s {
             "bw" => Ok(Self::Bw),
             "poster" => Ok(Self::Poster),
@@ -88,7 +95,8 @@ impl FromStr for Preset {
 }
 
 impl Config {
-    pub fn from_preset(preset: Preset) -> Self {
+    #[no_mangle]
+    pub extern "C" fn from_preset(preset: Preset) -> Self {
         match preset {
             Preset::Bw => Self {
                 hierarchical: Hierarchical::Stacked,
@@ -135,7 +143,8 @@ impl Config {
         }
     }
 
-    pub(crate) fn into_converter_config(self) -> ConverterConfig {
+    #[no_mangle]
+    pub(crate) extern "C" fn into_converter_config(self) -> ConverterConfig {
         ConverterConfig {
             hierarchical: self.hierarchical,
             filter_speckle_area: self.filter_speckle * self.filter_speckle,
@@ -153,6 +162,7 @@ impl Config {
     }
 }
 
-fn deg2rad(deg: i32) -> f64 {
+#[no_mangle]
+pub extern "C" fn deg2rad(deg: i32) -> f64 {
     deg as f64 / 180.0 * std::f64::consts::PI
 }

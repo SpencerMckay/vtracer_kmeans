@@ -32,7 +32,8 @@ pub extern "C" fn convert_image_to_svg(
     write_svg(svg, output_path)
 }
 
-fn color_exists_in_image(img: &ColorImage, color: Color) -> bool {
+#[no_mangle]
+pub extern "C" fn color_exists_in_image(img: &ColorImage, color: Color) -> bool {
     for y in 0..img.height {
         for x in 0..img.width {
             let pixel_color = img.get_pixel(x, y);
@@ -44,7 +45,8 @@ fn color_exists_in_image(img: &ColorImage, color: Color) -> bool {
     false
 }
 
-fn find_unused_color_in_image(img: &ColorImage) -> Result<Color, String> {
+#[no_mangle]
+pub extern "C" fn find_unused_color_in_image(img: &ColorImage) -> Result<Color, String> {
     let special_colors = IntoIterator::into_iter([
         Color::new(255, 0, 0),
         Color::new(0, 255, 0),
@@ -67,7 +69,8 @@ fn find_unused_color_in_image(img: &ColorImage) -> Result<Color, String> {
     ))
 }
 
-fn should_key_image(img: &ColorImage) -> bool {
+#[no_mangle]
+pub extern "C" fn should_key_image(img: &ColorImage) -> bool {
     if img.width == 0 || img.height == 0 {
         return false;
     }
@@ -96,7 +99,8 @@ fn should_key_image(img: &ColorImage) -> bool {
     false
 }
 
-fn color_image_to_svg(mut img: ColorImage, config: ConverterConfig) -> Result<SvgFile, String> {
+#[no_mangle]
+pub extern "C" fn color_image_to_svg(mut img: ColorImage, config: ConverterConfig) -> Result<SvgFile, String> {
     let width = img.width;
     let height = img.height;
 
@@ -196,7 +200,8 @@ fn color_image_to_svg(mut img: ColorImage, config: ConverterConfig) -> Result<Sv
     Ok(svg)
 }
 
-fn read_image(input_path: &Path) -> Result<ColorImage, String> {
+#[no_mangle]
+pub extern "C" fn read_image(input_path: &Path) -> Result<ColorImage, String> {
     let img = image::open(input_path);
     let img = match img {
         Ok(file) => file.to_rgba8(),
@@ -213,7 +218,8 @@ fn read_image(input_path: &Path) -> Result<ColorImage, String> {
     Ok(img)
 }
 
-fn write_svg(svg: SvgFile, output_path: &Path) -> Result<(), String> {
+#[no_mangle]
+pub extern "C" fn write_svg(svg: SvgFile, output_path: &Path) -> Result<(), String> {
     let out_file = File::create(output_path);
     let mut out_file = match out_file {
         Ok(file) => file,
@@ -225,7 +231,8 @@ fn write_svg(svg: SvgFile, output_path: &Path) -> Result<(), String> {
     Ok(())
 }
 
-fn kmeans_clustering(img: &ColorImage, num_clusters: usize, max_iterations: usize) -> Vec<Color> {
+#[no_mangle]
+pub extern "C" fn kmeans_clustering(img: &ColorImage, num_clusters: usize, max_iterations: usize) -> Vec<Color> {
     let rng = fastrand::Rng::new();
     let mut centroids: Vec<Color> = (0..num_clusters)
         .map(|_| {
@@ -268,7 +275,8 @@ fn kmeans_clustering(img: &ColorImage, num_clusters: usize, max_iterations: usiz
     centroids
 }
 
-fn color_distance(c1: Color, c2: Color) -> usize {
+#[no_mangle]
+pub extern "C" fn color_distance(c1: Color, c2: Color) -> usize {
     let dr = c1.r as isize - c2.r as isize;
     let dg = c1.g as isize - c2.g as isize;
     let db = c1.b as isize - c2.b as isize;
