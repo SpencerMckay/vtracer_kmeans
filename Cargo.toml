@@ -1,0 +1,15 @@
+[package]
+name = "vtracer_kmeans"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+clap = "2.33.3"
+image = "0.23.10"
+visioncortex = { version = "0.8.8" }
+fastrand = "1.8"
+
+
+[lib]
+name = "vtracer_kmeans"
+crate-type = ["staticlib", "cdylib"]
