@@ -1,1 +1,0 @@
-/Users/spencer/Developer/vtracer-recolor/target/aarch64-apple-ios/release/libvtracer_kmeans.a: /Users/spencer/Developer/vtracer-recolor/src/config.rs /Users/spencer/Developer/vtracer-recolor/src/converter.rs /Users/spencer/Developer/vtracer-recolor/src/lib.rs /Users/spencer/Developer/vtracer-recolor/src/svg.rs
